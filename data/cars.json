@@ -29,7 +29,7 @@
     {
       "carType": "Hatchback",
       "brand": "Honda",
-      "carModel": "Civic Hatch",
+      "carModel": "Civic",
       "image": "hondaCivicHatch.jpg",
       "yearOfManufacture": 2019,
       "mileage": "29,000 km",
@@ -68,7 +68,7 @@
     {
       "carType": "Hatchback",
       "brand": "Toyota",
-      "carModel": "Corolla Hatch",
+      "carModel": "Corolla",
       "image": "toyotaCorollaHatch.jpg",
       "yearOfManufacture": 2016,
       "mileage": "47,000 km",
@@ -107,7 +107,7 @@
     {
       "carType": "Hatchback",
       "brand": "Kia",
-      "carModel": "Cerato Hatch",
+      "carModel": "Cerato",
       "image": "kiaCeratoHatch.jpg",
       "yearOfManufacture": 2021,
       "mileage": "19,000 km",
