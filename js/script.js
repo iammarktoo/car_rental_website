@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function populateDropdown(cars){
-        const unicarTypes = [...new Set(cars.map(car => car.carType))];
+        const uniqueTypes = [...new Set(cars.map(car => car.carType))];
         uniqueType.forEach(type=>{
             const option = document.createElement("option");
             option.value = type;
