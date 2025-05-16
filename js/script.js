@@ -79,7 +79,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 suggestions.appendChild(li);
             }
         });
+        document.addEventListener("click", (event) => {
+            if (!searchBox.contains(event.target) && !suggestions.contains(event.target)) {
+                suggestions.innerHTML = "";
+                }
+            });
     });
+
 
     //Filter cars by brand/model and type
     searchBtn.addEventListener("click", () =>{
