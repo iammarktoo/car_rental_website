@@ -102,6 +102,19 @@ document.addEventListener("DOMContentLoaded", () => {
         suggestions.innerHTML = "";
         displayCars(filteredCars);
     });
+    //Filter cars by type
+    dropdown.addEventListener("change", () => {
+        const selectedType = dropdown.value;
+        const query = searchBox.value.toLowerCase();
+
+        const filteredCars = allCars.filter(car => {
+            const matchType = selectedType === "all" || car.carType === selectedType;
+            const matchBrand = `${car.brand}`.toLowerCase().includes(query);
+            return matchType && matchBrand;
+        });
+        suggestions.innerHTML = "";
+        displayCars(filteredCars);
+    })
 });
 
 
