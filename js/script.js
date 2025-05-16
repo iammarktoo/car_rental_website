@@ -26,8 +26,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         carGrid.appendChild(carCard);
       });
+      //Populate carType dropdown
+    const uniqueCarTypes = [...new Set(data.cars.map(car => car.carType))];
+    uniqueCarTypes.forEach(type => {
+        const option = document.createElement("option");
+        option.value = type;
+        option.textContent = type;
+        dropdown.appendChild(option);
+    });
     })
     .catch(error => {
       console.error("Error loading car data:", error);
     });
 });
+
+
