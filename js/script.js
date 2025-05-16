@@ -51,26 +51,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //Live search suggestion logic
     searchBox.addEventListener("input", () => {
-        const input = searchBox.value.toLowerCase();
+        const query = searchBox.value.toLowerCase();
         suggestions.innerHTML = "";
 
-        if (!input) return;
+        if (!query) return;
 
         const filtered = allCars.filter(car=>
-            car.brand.toLowerCase().includes(input) ||
-            car.carModel.toLowerCase().includes(input)
+            car.brand.toLowerCase().includes(query) ||
+            car.carModel.toLowerCase().includes(query)
         );
 
         const seen = new Set();
 
         filtered.slice(0,10).forEach(car => {
-            const suggestionText = `${car.brand} ${car.carModel}`;
-            if (!seen.has(suggestionText)){
-                seen.add(suggestionText);
+            const brand = car.brand;
+            const queryLower = query.toLowerCase();
+            const brandLower = brand.toLowerCase();
+            // Only match brands that start with the input characters
+            if (brandLower.startsWith(queryLower) && !seen.has(brand)) {
+                seen.add(brand);
                 const li = document.createElement("li");
-                li.textContent = suggestionText;
+                li.textContent = brand;
                 li.addEventListener("click", () => {
-                    searchBox.value = suggestionText;
+                    searchBox.value = brand;
                     suggestions.innerHTML = "";
                 });
                 suggestions.appendChild(li);
@@ -80,14 +83,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //Filter cars by brand/model and type
     searchBtn.addEventListener("click", () =>{
-        const query = searchqque.value.toLowerCase();
+        const query = searchBox.value.toLowerCase();
         const selectedType = dropdown.value;
 
         const filteredCars = allCars.filter(car =>{
-            const matchBrandModel = 
-                `${car.brand} ${car.carModel}`.toLowerCase().includes(query);
+            const matchBrand = 
+                `${car.brand}`.toLowerCase().includes(query);
             const matchType = selectedType === "all" || car.carType === selectedType;
-            return matchBrandModel && matchType;
+            return matchBrand && matchType;
         });
 
         suggestions.innerHTML = "";
