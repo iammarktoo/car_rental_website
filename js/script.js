@@ -1,24 +1,63 @@
-document.addEventListener("DOMContentLoaded", () => {
-  fetch("data/cars.json")
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json(); // Only parse JSON if fetch succeeded
-    })
-    .then(data => {
-        allCars = data.cars;
-        displayCars(allCars);
-        populateDropdown(allCars);
-    })
-    .catch(error => console.error("Error loading car data:",error));
+function saveToLocalStorage(key,data){
+    try{
+        localStorage.setItem(key, JSON.stringify(data));
+    }catch(error){
+        console.error("Error saving to local storage:", error);
+    }
+}
+function loadFromLocalStorage(key){
+    try{
+        const data = localStorage.getItem(key);
+        return data ? JSON.parse(data) : null;
+    }catch(error){
+        console.error("Error loading from local storage:", error);
+        return null;
+    }
+    
+}
 
+document.addEventListener("DOMContentLoaded", () => {
+  
     const carGrid = document.getElementById("carGrid");
     const dropdown = document.getElementById("carTypeDropdown");
     const searchBox = document.getElementById("searchBox");
     const searchBtn = document.getElementById("searchBtn");
     const suggestions = document.getElementById("suggestions");
 
+    let allCars = [];
+    let allReservations = [];
+
+    async function fetchAndStoreJSON(filePath, storageKey) {
+        const response = await fetch(filePath);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        saveToLocalStorage(storageKey, data);
+        return data;
+    }
+
+    async function init(){
+        try{
+            let carData = loadFromLocalStorage("cars");
+            let reservationData = loadFromLocalStorage("reservations");
+            // If data is not in local storage, fetch it
+            if (!carData) {
+                carData = await fetchAndStoreJSON("data/cars.json", "cars");
+            }
+            if (!reservationData) {
+                reservationData = await fetchAndStoreJSON("data/reservations.json", "reservations");
+            }
+            allCars = carData.cars;
+            allReservations = reservationData.reservations;
+            displayCars(allCars);
+            populateDropdown(allCars);
+        }catch(error){
+            console.error("Error initializing data:", error);
+        }
+    }
+    init();
+    //Display cars in the grid
     function displayCars(cars) {
         carGrid.innerHTML = "";
         cars.forEach(car=>{
