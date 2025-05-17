@@ -185,3 +185,16 @@ footer {
   margin-top: 40px;
   width: 100%;
 }
+.reserve-btn {
+  padding: 10px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.reserve-btn:hover {
+  background-color: #0056b3;
+}

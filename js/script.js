@@ -73,8 +73,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 <p><strong>Availability:</strong> ${car.available ? "Available" : "Not available"}</p>
                 <p><strong>Price:</strong> $${car.pricePerDay}/day</p>
                 <p>${car.description}</p>
+                <button class = "reserve-btn" data-vin = "${car.vin}">Reserve</button>
             `;
       carGrid.appendChild(carCard);
+        });
+
+        document.querySelectorAll(".reserve-btn").forEach(button => {
+            button.addEventListener("click", (e) => {
+                const carId = e.target.dataset.vin;
+                window.location.href = `reservation.html?carId=${carId}`;
+            });
         });
     }
 
