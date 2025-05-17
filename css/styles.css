@@ -198,3 +198,51 @@ footer {
 .reserve-btn:hover {
   background-color: #0056b3;
 }
+.reservation-card {
+    display: flex;
+    flex-direction: row;
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border: 2px solid #ccc;
+    border-radius: 16px;
+    background-color: #fdfdfd;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.reservation-card img {
+    width: 250px;
+    height: 180px;
+    border-radius: 12px;
+    margin-right: 2rem;
+}
+
+.reservation-card-content {
+    flex: 1;
+}
+
+.reservation-card h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.reservation-card p {
+    font-size: 1.1rem;
+    margin: 0.4rem 0;
+}
+
+.confirm-btn {
+    margin-top: 1rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.confirm-btn:hover {
+    background-color: #0056b3;
+}

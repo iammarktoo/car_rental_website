@@ -24,7 +24,59 @@
             <div class="car-grid" id="carGrid"></div>
 
         </section>
+    <script>
+        function loadFromLocalStorage(key) {
+        try {
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : null;
+        } catch (error) {
+            console.error("Error loading from local storage:", error);
+            return null;
+        }
+    }
     
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            const params = new URLSearchParams(window.location.search);
+            const carId = params.get("carId");
+
+            if (!carId) return;
+
+            let carsData = loadFromLocalStorage("cars");
+
+            const cars = Array.isArray(carsData) ? carsData : carsData?.cars;
+
+            if (!Array.isArray(cars)) {
+                console.error("Invalid car data format");
+                return;
+            }
+            const selectedCar = cars.find(car => car.vin === carId);
+
+            if (!selectedCar) {
+                document.getElementById("carGrid").innerHTML = "<p>Car not found.</p>";
+                return;
+            }
+            const reservationCard = document.createElement("div");
+            reservationCard.className = "reservation-card";
+            reservationCard.innerHTML = `
+            <img src="images/${selectedCar.image}" alt="${selectedCar.brand} ${selectedCar.carModel}">
+            <div class="reservation-card-content">
+                <h2>${selectedCar.brand} ${selectedCar.carModel}</h2>
+                <p><strong>Type:</strong> ${selectedCar.carType}</p>
+                <p><strong>Year:</strong> ${selectedCar.yearOfManufacture}</p>
+                <p><strong>Mileage:</strong> ${selectedCar.mileage}</p>
+                <p><strong>Fuel:</strong> ${selectedCar.fuelType}</p>
+                <p><strong>Availability:</strong> ${selectedCar.available ? "Available" : "Not available"}</p>
+                <p><strong>Price:</strong> $${selectedCar.pricePerDay}/day</p>
+                <p>${selectedCar.description}</p>
+                <button class="confirm-btn">Confirm Reservation</button>
+            </div>
+        `;
+        const grid = document.getElementById("carGrid");
+        grid.innerHTML = ""; // Clear previous content
+        grid.appendChild(reservationCard);
+        });
+    </script>
     </main>
 </body>
     <footer>
