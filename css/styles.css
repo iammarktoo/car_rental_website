@@ -200,6 +200,12 @@ footer {
 .reserve-btn:hover {
   background-color: #0056b3;
 }
+.reserve-btn:disabled,
+.disabled-btn {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
 .reservation-card {
     display: flex;
     flex-direction: row;

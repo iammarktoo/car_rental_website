@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchBox = document.getElementById("searchBox");
     const searchBtn = document.getElementById("searchBtn");
     const suggestions = document.getElementById("suggestions");
+    
 
     let allCars = [];
     let allReservations = [];
@@ -73,7 +74,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 <p><strong>Availability:</strong> ${car.available ? "Available" : "Not available"}</p>
                 <p><strong>Price:</strong> $${car.pricePerDay}/day</p>
                 <p>${car.description}</p>
-                <button class = "reserve-btn" data-vin = "${car.vin}">Reserve</button>
+                <button 
+                class = "reserve-btn" ${!car.available ? 'disabled-btn' : ''}
+                data-vin = "${car.vin}"
+                ${!car.available ? 'disabled' : ''}>
+                ${car.available ? 'Reserve' : 'Not Available'}
+                </button>
             `;
       carGrid.appendChild(carCard);
         });
