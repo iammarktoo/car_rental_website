@@ -18,17 +18,16 @@
     <main>
          <!--Search Bar-->
         <section class="search">
-            <input type="text" id="searchBox" placeholder="Search for cars...">
-            <!--Search button-->
-            <button id="searchBtn">Search</button>
-            <!--suggestions list-->
-            <ul id = "suggestions" class="suggestions-list"></ul>
-            <!--Car Type Dropdown-->
-            <select id="carTypeDropdown">
-                <option value="all">All</option>
-            </select>
-
-        </section>
+            <div class="search-row">
+                <input type="text" id="searchBox" placeholder="Search for cars...">
+                <select id="carTypeDropdown">
+                    <option value="all">All</option>
+                </select>
+                <button id="searchBtn">Search</button>
+            </div>
+  <!-- Suggestions should stay aligned under the input box -->
+  <ul id="suggestions" class="suggestions-list"></ul>
+</section>
         <!--Car Grid-->
         <section id="home">
             <h2>Avaliable cars</h2>

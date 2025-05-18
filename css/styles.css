@@ -53,13 +53,14 @@ nav ul li a:hover {
 }
 
 /* Search Section */
-.search {
+.search-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
   margin-bottom: 20px;
   position: relative;
+  flex-wrap: wrap;
 }
 
 #searchBox, #carTypeDropdown {
