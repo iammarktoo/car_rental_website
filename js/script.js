@@ -102,54 +102,85 @@ document.addEventListener("DOMContentLoaded", () => {
         suggestions.innerHTML = "";
 
         if (!query) return;
-
-        const filtered = allCars.filter(car=>
-            car.brand.toLowerCase().includes(query) ||
-            car.carModel.toLowerCase().includes(query)
-        );
-
         const seen = new Set();
+        const suggestionsList = [];
 
-        filtered.slice(0,10).forEach(car => {
-            const brand = car.brand;
-            const queryLower = query.toLowerCase();
+        allCars.forEach(car=>{
+            const brand = car.brand
+            const model = car.carModel;
+            const brandModel = `${brand} ${model}`;
+
+
             const brandLower = brand.toLowerCase();
-            // Only match brands that start with the input characters
-            if (brandLower.startsWith(queryLower) && !seen.has(brand)) {
-                seen.add(brand);
-                const li = document.createElement("li");
-                li.textContent = brand;
-                li.addEventListener("click", () => {
-                    searchBox.value = brand;
-                    suggestions.innerHTML = "";
-                });
-                suggestions.appendChild(li);
-            }
+            const modelLower = model.toLowerCase();
+            const brandModelLower = brandModel.toLowerCase();
+        
+
+        //Match brand
+        if (brandLower.startsWith(query) && !seen.has(brandLower)) {
+            seen.add(brand);
+            suggestionsList.push(brand);
+        }
+        //Match model
+        if (modelLower.startsWith(query) && !seen.has(modelLower)) {
+            seen.add(model);
+            suggestionsList.push(model);
+        }
+        //Match brand+model
+        if (brandModelLower.startsWith(query) && !seen.has(brandModelLower)) {
+            seen.add(brandModel);
+            suggestionsList.push(brandModel);
+        }
+    });
+    
+
+        
+        suggestionsList.slice(0,10).forEach(text => {
+           const li = document.createElement("li");
+           li.textContent = text;
+              li.addEventListener("click", () => {
+                searchBox.value = text;
+                suggestions.innerHTML = "";
+            });
+            suggestions.appendChild(li);
         });
+    });
+    
         document.addEventListener("click", (event) => {
             if (!searchBox.contains(event.target) && !suggestions.contains(event.target)) {
                 suggestions.innerHTML = "";
                 }
             });
-    });
+    
 
 
     //Filter cars by brand/model and type
-    searchBtn.addEventListener("click", () =>{
-        const query = searchBox.value.toLowerCase();
+    searchBtn.addEventListener("click", () => {
+        const query = searchBox.value.toLowerCase().trim();
         const selectedType = dropdown.value;
 
-        const filteredCars = allCars.filter(car =>{
-            const matchBrand = 
-                `${car.brand}`.toLowerCase().includes(query);
+        const filteredCars = allCars.filter(car => {
+            const brandModel = `${car.brand} ${car.carModel}`.toLowerCase();
+            // Determine match: 
+            // If query contains a space, try matching the combined brand+model;
+            // Otherwise, match the brand alone.
+            const matchQuery =
+                car.brand.toLowerCase().includes(query) ||
+                car.carModel.toLowerCase().includes(query) ||
+                brandModel.includes(query);
+
+            // Also filter by car type
             const matchType = selectedType === "all" || car.carType === selectedType;
-            return matchBrand && matchType;
+
+            return matchQuery && matchType;
         });
 
+        // Clear suggestions and update the displayed car grid
         suggestions.innerHTML = "";
         displayCars(filteredCars);
     });
-    //Filter cars by type
+
+    // Filter cars by type
     dropdown.addEventListener("change", () => {
         const selectedType = dropdown.value;
         const query = searchBox.value.toLowerCase();
@@ -161,8 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         suggestions.innerHTML = "";
         displayCars(filteredCars);
-    })
+    });
 });
 
 
-    
