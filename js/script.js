@@ -40,28 +40,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function init(){
         try{
-            let carData = loadFromLocalStorage("cars");
-            let reservationData = loadFromLocalStorage("reservations");
+            let rawCars = loadFromLocalStorage("cars");
+            let carData = Array.isArray(rawCars) ? rawCars : rawCars?.cars;
+            let rawReservations = loadFromLocalStorage("reservations");
+            let reservationData = Array.isArray(rawReservations) ? rawReservations : rawReservations?.reservations;
             // If data is not in local storage, fetch it
             if (!carData) {
                 carData = await fetchAndStoreJSON("data/cars.json", "cars");
+                carData = Array.isArray(carData) ? carData : carData?.cars;
+
             }
             if (!reservationData) {
                 reservationData = await fetchAndStoreJSON("data/reservations.json", "reservations");
+                reservationData = Array.isArray(reservationData) ? reservationData : reservationData?.reservations;
             }
-            allCars = carData.cars;
-            allReservations = reservationData.reservations;
-            displayCars(allCars);
+            const allCars = Array.isArray(carData) ? carData : carData?.cars;
+            const allReservations = Array.isArray(reservationData) ? reservationData : reservationData?.reservations ?? [];
+
+            if (!Array.isArray(allCars)) throw new Error("Cars data is not an array");
+            if (!Array.isArray(allReservations)) throw new Error("Reservations data is not an array");
+
+            displayCars(allCars, allReservations);
             populateDropdown(allCars);
         }catch(error){
             console.error("Error initializing data:", error);
         }
+
     }
     init();
     //Display cars in the grid
-    function displayCars(cars) {
+    function displayCars(allCars, allReservations){
+        //Update car availability based on reservations
+        const today = new Date();
+
+        allCars.forEach(car => {
+            const carReservations = allReservations.filter(reservation => reservation.vin === car.vin);
+
+            let isAvailable = true;
+            carReservations.forEach(reservation => {
+                const startDate = new Date(reservation.startDate);
+                const endDate = new Date(reservation.endDate);
+
+                if (today >= startDate && today <= endDate) {
+                    isAvailable = false;
+                }
+            });
+            car.available = isAvailable;
+        });
         carGrid.innerHTML = "";
-        cars.forEach(car=>{
+        allCars.forEach(car=>{
             const carCard = document.createElement("div");
             carCard.className = "car-card";
             carCard.innerHTML = `
@@ -183,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Clear suggestions and update the displayed car grid
         suggestions.innerHTML = "";
-        displayCars(filteredCars);
+        displayCars(filteredCars, allReservations);
     });
 
     // Filter cars by type
@@ -197,7 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return matchType && matchBrand;
         });
         suggestions.innerHTML = "";
-        displayCars(filteredCars);
+        displayCars(filteredCars, allReservations);
     });
 });
 

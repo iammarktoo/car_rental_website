@@ -149,10 +149,41 @@
                     return;
                 }
 
-                if (end < start) {
+                if (end <= start) {
                     alert("Return date cannot be before pickup date.");
                     return;
                 }
+
+                //Retrieve car VIN
+                const params = new URLSearchParams(window.location.search);
+                const vin = params.get("carId");
+                //Load existing reservations from local storage
+                let reservations = loadFromLocalStorage("reservations");
+                if (!Array.isArray(reservations)) {
+                    reservations = [];
+                }
+                //Append new reservation
+                reservations.push({
+                    name,
+                    email,
+                    startDate,
+                    endDate,
+                    vin
+                });
+                localStorage.setItem("reservations", JSON.stringify(reservations));
+
+                //update car availability
+                let carsData = loadFromLocalStorage("cars");
+                let cars = Array.isArray(carsData) ? carsData : carsData?.cars || [];
+                let carIndex = cars.findIndex(car => car.vin === vin);
+                if (carIndex !== -1) {
+                    cars[carIndex].availableUntil = endDate;
+                    cars[carIndex].available = false;
+                    localStorage.setItem("cars", JSON.stringify(cars));
+                } else {
+                    console.error("Car not found in local storage.");
+                }
+
                 //If everything is valid, proceed with submission
                 console.log("Reservation submitted:", {name, email, startDate, endDate});
                 //Close modal and show success message
