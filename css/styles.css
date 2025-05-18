@@ -248,3 +248,13 @@ footer {
 .confirm-btn:hover {
     background-color: #0056b3;
 }
+.cancel-btn {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: #ccc;
+  color: black;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
