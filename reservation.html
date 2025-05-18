@@ -24,6 +24,34 @@
             <div class="car-grid" id="carGrid"></div>
 
         </section>
+
+        <div id="reservationModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2>Complete Your Reservation</h2>
+                <form id="reservationForm">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+
+                    <div class = "date-row">
+                        <div>
+                            <label for="startDate">Pickup Date:</label>
+                            <input type="date" id="startDate" name="startDate" required>
+                        </div>
+                        <div>
+                            <label for="endDate">Return Date:</label>
+                            <input type="date" id="endDate" name="endDate" required>
+                        </div>
+                    </div>
+
+                    <button type="submit">Submit Reservation</button>
+                </form>
+            </div>
+
+        </div>
     <script>
         function loadFromLocalStorage(key) {
         try {
@@ -77,6 +105,64 @@
         grid.innerHTML = ""; // Clear previous content
         grid.appendChild(reservationCard);
         });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const confirmBtn = document.querySelector(".confirm-btn");
+            const modal = document.getElementById("reservationModal");
+            const closeBtn = document.querySelector(".close-btn");
+
+            confirmBtn.addEventListener("click", function() {
+                modal.style.display = "block";
+            });
+
+            closeBtn.addEventListener("click", function() {
+                modal.style.display = "none";
+            });
+
+            window.addEventListener("click", function(event) {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            });
+
+            document.getElementById("reservationForm").addEventListener("submit", function(e){
+                e.preventDefault();
+                //Collect data and handle submission logic
+                const name = document.getElementById("name").value;
+                const email = document.getElementById("email").value;
+                const startDate = document.getElementById("startDate").value;
+                const endDate = document.getElementById("endDate").value;
+                //Data vlidation
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+
+                if (!email.includes("@")) {
+                    alert("Please enter a valid email address.");
+                    return;
+                }
+
+                if (start < today) {
+                    alert("Pickup date cannot be in the past.");
+                    return;
+                }
+
+                if (end < start) {
+                    alert("Return date cannot be before pickup date.");
+                    return;
+                }
+                //If everything is valid, proceed with submission
+                console.log("Reservation submitted:", {name, email, startDate, endDate});
+                //Close modal and show success message
+                modal.style.display = "none";
+                alert("Reservation confirmed!");
+            });
+
+        });
+       
+
     </script>
     </main>
 </body>
