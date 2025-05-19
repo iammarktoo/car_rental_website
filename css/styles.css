@@ -306,3 +306,7 @@ footer {
 .date-row > div {
   flex: 1;
 }
+a {
+  text-decoration: none;
+  color: inherit;
+}
