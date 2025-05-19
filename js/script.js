@@ -25,8 +25,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const suggestions = document.getElementById("suggestions");
     
 
-    let allCars = [];
-    let allReservations = [];
+    let allCars;
+    let allReservations;
 
     async function fetchAndStoreJSON(filePath, storageKey) {
         const response = await fetch(filePath);
@@ -54,8 +54,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 reservationData = await fetchAndStoreJSON("data/reservations.json", "reservations");
                 reservationData = Array.isArray(reservationData) ? reservationData : reservationData?.reservations;
             }
-            const allCars = Array.isArray(carData) ? carData : carData?.cars;
-            const allReservations = Array.isArray(reservationData) ? reservationData : reservationData?.reservations ?? [];
+            allCars = Array.isArray(carData) ? carData : carData?.cars;
+            allReservations = Array.isArray(reservationData) ? reservationData : reservationData?.reservations ?? [];
 
             if (!Array.isArray(allCars)) throw new Error("Cars data is not an array");
             if (!Array.isArray(allReservations)) throw new Error("Reservations data is not an array");
@@ -65,6 +65,61 @@ document.addEventListener("DOMContentLoaded", () => {
         }catch(error){
             console.error("Error initializing data:", error);
         }
+
+        //Live search suggestion logic
+        searchBox.addEventListener("input", () => {
+            const query = searchBox.value.toLowerCase();
+            suggestions.innerHTML = "";
+
+            if (!query) return;
+            const seen = new Set();
+            const suggestionsList = [];
+
+            allCars.forEach(car=>{
+                const brand = car.brand
+                const model = car.carModel;
+                const brandModel = `${brand} ${model}`;
+
+
+                const brandLower = brand.toLowerCase();
+                const modelLower = model.toLowerCase();
+                const brandModelLower = brandModel.toLowerCase();
+        
+
+                //Match brand
+                if (brandLower.startsWith(query) && !seen.has(brandLower)) {
+                    seen.add(brand);
+                    suggestionsList.push(brand);
+                }
+                //Match model
+                if (modelLower.startsWith(query) && !seen.has(modelLower)) {
+                    seen.add(model);
+                    suggestionsList.push(model);
+                }
+                //Match brand+model
+                if (brandModelLower.startsWith(query) && !seen.has(brandModelLower)) {
+                    seen.add(brandModel);
+                    suggestionsList.push(brandModel);
+                }
+            });
+        
+            suggestionsList.slice(0,10).forEach(text => {
+                const li = document.createElement("li");
+                li.textContent = text;
+                li.addEventListener("click", () => {
+                    searchBox.value = text;
+                    suggestions.innerHTML = "";
+                });
+                suggestions.appendChild(li);
+            });
+        });
+    
+        document.addEventListener("click", (event) => {
+            if (!searchBox.contains(event.target) && !suggestions.contains(event.target)) {
+                suggestions.innerHTML = "";
+                }
+            });
+    
 
     }
     init();
@@ -129,64 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    //Live search suggestion logic
-    searchBox.addEventListener("input", () => {
-        const query = searchBox.value.toLowerCase();
-        suggestions.innerHTML = "";
-
-        if (!query) return;
-        const seen = new Set();
-        const suggestionsList = [];
-
-        allCars.forEach(car=>{
-            const brand = car.brand
-            const model = car.carModel;
-            const brandModel = `${brand} ${model}`;
-
-
-            const brandLower = brand.toLowerCase();
-            const modelLower = model.toLowerCase();
-            const brandModelLower = brandModel.toLowerCase();
-        
-
-        //Match brand
-        if (brandLower.startsWith(query) && !seen.has(brandLower)) {
-            seen.add(brand);
-            suggestionsList.push(brand);
-        }
-        //Match model
-        if (modelLower.startsWith(query) && !seen.has(modelLower)) {
-            seen.add(model);
-            suggestionsList.push(model);
-        }
-        //Match brand+model
-        if (brandModelLower.startsWith(query) && !seen.has(brandModelLower)) {
-            seen.add(brandModel);
-            suggestionsList.push(brandModel);
-        }
-    });
     
-
-        
-        suggestionsList.slice(0,10).forEach(text => {
-           const li = document.createElement("li");
-           li.textContent = text;
-              li.addEventListener("click", () => {
-                searchBox.value = text;
-                suggestions.innerHTML = "";
-            });
-            suggestions.appendChild(li);
-        });
-    });
-    
-        document.addEventListener("click", (event) => {
-            if (!searchBox.contains(event.target) && !suggestions.contains(event.target)) {
-                suggestions.innerHTML = "";
-                }
-            });
-    
-
-
     //Filter cars by brand/model and type
     searchBtn.addEventListener("click", () => {
         const query = searchBox.value.toLowerCase().trim();
